@@ -33,7 +33,7 @@ func (a *authorizer) Authorize(subj, obj, act string) error {
 	if err != nil {
 		return err
 	}
-	if !rs[0].Expressions[0].Value.(bool) {
+	if !rs.Allowed() {
 		return fmt.Errorf("subj %s not permitted action %s on %s", subj, act, obj)
 	}
 	return nil
