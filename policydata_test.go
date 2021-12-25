@@ -1,36 +1,47 @@
 package policybench
 
 import (
-	"github.com/MarvinJWendt/testza"
-	"github.com/brianvoe/gofakeit/v6"
 	"math/rand"
 	"os"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/MarvinJWendt/testza"
+	"github.com/brianvoe/gofakeit/v6"
 )
 
 func TestPolicyData(t *testing.T) {
-	pd := NewPolicyData(100)
-	f,err := os.OpenFile(testDataPath+"policy_100.csv",os.O_CREATE | os.O_WRONLY | os.O_TRUNC, 0644)
+	pd := NewPolicyDataMap(100)
+	f, err := os.OpenFile(testDataPath+"policy_100.csv", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		t.Fatalf("can't open policy file, err: %v", err)
 	}
-	err = WriteCSV(f,pd)
-	safeClose(f,err)
-	testza.AssertNoError(t,err)
+	err = WriteCSV(f, pd)
+	safeClose(f, err)
+	testza.AssertNoError(t, err)
 
-	f,err = os.OpenFile(testDataPath+"policy_100.json",os.O_CREATE | os.O_WRONLY | os.O_TRUNC, 0644)
+	f, err = os.OpenFile(testDataPath+"policy_100.json", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		t.Fatalf("can't open policy file, err: %v", err)
 	}
-	err = WriteJSON(f,pd)
-	safeClose(f,err)
-	testza.AssertNoError(t,err)
+	err = WriteJSON(f, pd)
+	safeClose(f, err)
+	testza.AssertNoError(t, err)
 
+	_, err = ReadJSON(testDataPath + "policy_100.json")
+	testza.AssertNoError(t, err)
+
+	f, err = os.OpenFile(testDataPath+"policy_100.polar", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		t.Fatalf("can't open policy file, err: %v", err)
+	}
+	err = WritePolarRules(f, pd)
+	safeClose(f, err)
+	testza.AssertNoError(t, err)
 }
 
-func TestSelectRandNof(t *testing.T){
+func TestSelectRandNof(t *testing.T) {
 	for iter := 0; iter < 1000; iter++ {
 		rand.Seed(time.Now().UnixNano())
 		var sourceL int
